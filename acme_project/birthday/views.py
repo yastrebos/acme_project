@@ -1,5 +1,8 @@
 # birthday/views.py 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
@@ -25,15 +28,15 @@ class BirthdayMixin:
 
 
 
-class BirthdayCreateView(BirthdayMixin, CreateView):
+class BirthdayCreateView(LoginRequiredMixin, BirthdayMixin, CreateView):
     form_class = BirthdayForm
 
 
-class BirthdayUpdateView(BirthdayMixin, UpdateView):
+class BirthdayUpdateView(LoginRequiredMixin, BirthdayMixin, UpdateView):
     form_class = BirthdayForm
 
 
-class BirthdayDeleteView(BirthdayMixin, DeleteView):
+class BirthdayDeleteView(LoginRequiredMixin, BirthdayMixin, DeleteView):
     pass 
 
 class BirthdayDetailView(DetailView):
@@ -49,3 +52,7 @@ class BirthdayDetailView(DetailView):
         )
         # Возвращаем словарь контекста.
         return context 
+    
+@login_required
+def simple_view(request):
+    return HttpResponse('Страница для залогиненных пользователей!')
